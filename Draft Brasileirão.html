@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Draft Brasileirão</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f0e6;--ink:#14231b;--mute:#5b6a60;--card:#fff;--line:#d5d8c8;--grass:#17543b;--grass2:#1d6347;--gold:#f2c230;--onGrass:#f6f4e8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1712;--ink:#eef1e6;--mute:#9db0a3;--card:#18271f;--line:#2b3d32}}
+:root[data-theme="dark"]{--bg:#0e1712;--ink:#eef1e6;--mute:#9db0a3;--card:#18271f;--line:#2b3d32}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Archivo,system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font:400 30px/1 "Archivo Black",Impact,sans-serif;margin:4px 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+.pitch{background:repeating-linear-gradient(0deg,var(--grass) 0 44px,var(--grass2) 44px 88px);border-radius:10px;padding:14px 8px;display:grid;gap:14px;border:2px solid var(--line)}
+.row{display:flex;justify-content:space-around;gap:6px}
+.slot{flex:1;max-width:112px;min-height:58px;border:1.5px dashed rgba(246,244,232,.55);border-radius:8px;color:var(--onGrass);text-align:center;padding:6px 4px;font-size:13px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.slot b{font:400 11px "Archivo Black",sans-serif;opacity:.8}
+.slot.now{border-color:var(--gold);border-style:solid;color:var(--gold)}
+.slot.done{background:rgba(0,0,0,.35);border-style:solid;border-color:transparent}
+.slot.done .n{font-weight:600;line-height:1.15}
+.slot.done .o{font:400 15px "Archivo Black",sans-serif;color:var(--gold)}
+h2{font:400 18px "Archivo Black",sans-serif;margin:20px 0 8px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:10px;text-align:left;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;border-left-width:8px}
+.opt:hover,.opt:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.opt .n{font-weight:600}.opt .c{color:var(--mute);font-size:13px}
+.opt .o{font:400 24px "Archivo Black",sans-serif}
+.bar{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+button.main{background:var(--gold);color:#14231b;border:0;border-radius:8px;padding:12px 16px;font:400 15px "Archivo Black",sans-serif;cursor:pointer}
+button.alt{background:none;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:12px 16px;font:600 15px Archivo,sans-serif;cursor:pointer}
+.res{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:14px}
+.big{font:400 44px/1 "Archivo Black",sans-serif}
+.res p{margin:6px 0 0;color:var(--mute)}
+.note{color:var(--mute);font-size:12px;margin-top:18px}
+
+.av{width:38px;height:38px;border-radius:50%;color:#fff;font:400 14px "Archivo Black",sans-serif;display:flex;align-items:center;justify-content:center;flex:none}
+.pl{display:flex;align-items:center;gap:10px;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:8px;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.pl:hover,.pl:focus-visible{outline:2px solid var(--gold)}
+.pl .i{flex:1;display:flex;flex-direction:column}.pl .n{font-weight:600}.pl .c{color:var(--mute);font-size:13px}
+.pl .o{font:400 22px "Archivo Black",sans-serif}
+.tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.tab{border:1.5px solid var(--line);background:none;color:var(--ink);border-radius:20px;padding:7px 14px;font:600 14px Archivo,sans-serif;cursor:pointer}
+.tab.on{background:var(--gold);color:#14231b;border-color:var(--gold)}
+.clock{font:400 44px/1 "Archivo Black",sans-serif;text-align:center;margin:14px 0 4px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lu{display:flex;gap:6px;align-items:center;margin-bottom:6px;font-size:13px}.lu .av{width:28px;height:28px;font-size:11px}.lu .i{flex:1;min-width:0;display:flex;flex-direction:column}
+.lu .n{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lu .c{color:var(--mute);font-size:11px}.lu .o{font:400 14px "Archivo Black",sans-serif}
+.tbar{display:block;height:6px;background:var(--line);border-radius:3px;margin-top:4px}.tbar i{display:block;height:100%;background:var(--gold);border-radius:3px}
+button:disabled{opacity:.4;cursor:default}.pick{margin:12px 0}.status{font:400 17px "Archivo Black",sans-serif;margin:6px 0}
+.sc{display:flex;gap:10px}.sc .res{flex:1}
+</style>
+</head>
+<body>
+<main>
+<h1>Draft Brasileirão</h1>
+<p class="sub" id="sub"></p>
+<div id="app"></div>
+<p class="note">Notas baseadas no desempenho no Brasileirão 2026 (Sofascore e Bola de Prata); algumas são estimadas. Edite a lista RAW no código para ajustar.</p>
+</main>
+<script>
+const CLUBS={"Flamengo":"#c8102e","Palmeiras":"#006437","Bahia":"#1a4fa3","Bragantino":"#b00020","Athletico-PR":"#b3121b","Coritiba":"#1b6e3c","Botafogo":"#222","Cruzeiro":"#1a4fa3","Fluminense":"#7a1f3d","Vasco":"#111","Corinthians":"#333","Santos":"#444","São Paulo":"#d4202c","Internacional":"#c8102e","Grêmio":"#0d80bf","Atlético-MG":"#222","Mirassol":"#c99a00","Chapecoense":"#1a8a3a"};
+// [nome, clube, posição, overall] — overall = nota média Sofascore/Bola de Prata no Brasileirão 2026 (74 + (nota-6,5)*20,5); alguns valores são estimados
+const RAW=[
+["Ronaldo","Bahia","GK",84],["Tiago Volpi","Bragantino","GK",89],["Carlos Miguel","Palmeiras","GK",87],["Rossi","Flamengo","GK",83],["Hugo Souza","Corinthians","GK",82],["Fábio","Fluminense","GK",82],["Léo Jardim","Vasco","GK",80],["Walter","Mirassol","GK",80],
+["David Duarte","Bahia","ZAG",89],["Esquivel","Athletico-PR","ZAG",88],["Léo Pereira","Flamengo","ZAG",88],["Gustavo Gómez","Palmeiras","ZAG",87],["Murilo","Palmeiras","ZAG",84],["Ignácio","Fluminense","ZAG",82],["Alexander Barboza","Botafogo","ZAG",82],["Gabriel Paulista","Corinthians","ZAG",80],["Gabriel Mercado","Internacional","ZAG",80],["Jonathan Jesus","Cruzeiro","ZAG",80],
+["Gastón Benavídez","Athletico-PR","LAT",86],["Luciano Juba","Bahia","LAT",86],["Cuiabano","Vasco","LAT",83],["Puma Rodríguez","Vasco","LAT",82],["Juninho Capixaba","Bragantino","LAT",82],["Reinaldo","Mirassol","LAT",82],["Samuel Xavier","Fluminense","LAT",81],
+["Danilo","Botafogo","MEI",92],["Matheus Pereira","Cruzeiro","MEI",90],["Marlon Freitas","Palmeiras","MEI",89],["Jorginho","Flamengo","MEI",89],["Acosta","Fluminense","MEI",89],["Josué","Coritiba","MEI",85],["Alan Patrick","Internacional","MEI",85],["Andreas Pereira","Palmeiras","MEI",85],["Arrascaeta","Flamengo","MEI",84],["Erick Pulgar","Flamengo","MEI",84],["Thiago Mendes","Vasco","MEI",84],["Jhon Arias","Palmeiras","MEI",84],["Maycon","Atlético-MG","MEI",80],["Danielzinho","São Paulo","MEI",80],["Bernabei","Internacional","MEI",80],
+["Samuel Lino","Flamengo","ATA",92],["Breno Lopes","Coritiba","ATA",90],["Viveros","Athletico-PR","ATA",88],["Gabigol","Santos","ATA",86],["Neymar","Santos","ATA",85],["Pedro","Flamengo","ATA",84],["Vitor Roque","Palmeiras","ATA",84],["Carbonero","Internacional","ATA",84],["Andrés Gómez","Vasco","ATA",82],["Lavega","Coritiba","ATA",82],["Ferreira","São Paulo","ATA",82],["Carlos Vinícius","Grêmio","ATA",80],["Léo Vieira","Chapecoense","ATA",80],["Matheus Martins","Botafogo","ATA",80]];
+const PLAYERS=RAW.map((x,i)=>[x[0],x[1],x[2],x[3],CLUBS[x[1]]||"#444",i]);
+const FORMS={"4-3-3":{ATA:3,MEI:3,LAT:2,ZAG:2,GK:1},"4-4-2":{ATA:2,MEI:4,LAT:2,ZAG:2,GK:1},"3-5-2":{ATA:2,MEI:3,LAT:2,ZAG:3,GK:1}};
+const NAMES={GK:"Goleiro",LAT:"Lateral",ZAG:"Zagueiro",MEI:"Meia",ATA:"Atacante"};
+const MODES={solo:"Sozinho",cpu:"Contra a CPU",amigo:"Contra um amigo",online:"Online"};
+let cfg={type:"escolha",mode:"cpu",form:"4-3-3"},S=null;
+const $=id=>document.getElementById(id);
+const ini=n=>n.split(" ").map(w=>w[0]).slice(0,2).join("");
+const av=p=>`<span class="av" style="background:${p[4]}">${ini(p[0])}</span>`;
+const total=()=>11*S.n;
+const isDone=()=>S.type==="leilao"?S.over:S.t>=total();
+const who=()=>{if(S.n==1)return 0;const r=S.t>>1,i=S.t&1;return r%2?1-i:i};
+const need=(k,pos)=>FORMS[S.form][pos]-S.teams[k].filter(p=>p[2]===pos).length;
+const taken=()=>S.teams[0].concat(S.teams[1]).map(p=>p[0]);
+const isCPU=k=>S.mode==="cpu"&&k===1;
+const vw=t=>S.online?S.me:(isCPU(t)?0:t);
+const tn=k=>S.online?(k===S.me?"Você":"Adversário"):S.mode==="cpu"?(k?"CPU":"Você"):S.mode==="amigo"?"Jogador "+(k+1):"Seu time";
+const avg=k=>Math.round(S.teams[k].reduce((s,p)=>s+p[3],0)/11);
+function startGame(){const l=cfg.type==="leilao",m=l&&cfg.mode==="solo"?"cpu":cfg.mode;
+ S={type:cfg.type,mode:m,form:cfg.form,n:m==="solo"?1:2,teams:[[],[]],t:0,view:0,pf:null,coins:[80,80],gone:[],round:0,over:false,online:m==="online",me:0};l?newRound():next()}
+const maxBid=k=>S.coins[k]-(11-S.teams[k].length-1);
+function newRound(){
+ const u=taken().concat(S.gone),c=PLAYERS.filter(p=>!u.includes(p[0])&&[0,1].some(k=>need(k,p[2])>0));
+ if(!c.length){S.over=true;return render()}
+ const p=c[Math.floor(Math.random()*c.length)],elig=[0,1].map(k=>need(k,p[2])>0),first=S.round++%2,t=elig[first]?first:1-first;
+ if(!elig[t]){S.gone.push(p[0]);return newRound()}
+ S.A={p,bid:0,leader:null,passed:[false,false],elig,turn:t,bids:0};setDl(S.A);S.view=vw(t);render();cpuTurn()}
+function act(k,amt){const A=S.A,j=1-k;
+ if(amt){A.bid=amt;A.leader=k;A.bids=(A.bids||0)+1}else A.passed[k]=true;
+ if(A.elig[j]&&!A.passed[j]&&A.leader!==j&&maxBid(j)>A.bid){A.turn=j;setDl(A);S.view=vw(j);render();cpuTurn()}
+ else{if(A.leader!==null){S.teams[A.leader].push(A.p);S.coins[A.leader]-=A.bid;S.last=tn(A.leader)+" levou "+A.p[0]+" por "+A.bid}
+  else{S.gone.push(A.p[0]);S.last=A.p[0]+" ficou sem lance"}
+  newRound()}}
+function cpuTurn(){const A=S.A;if(!isCPU(A.turn))return;
+ setTimeout(()=>{if(!S||S.A!==A||S.over)return;const k=A.turn;
+  if(A.w===undefined)A.w=Math.round(S.coins[k]/(11-S.teams[k].length)*(0.3+(A.p[3]-74)/6)*(0.85+Math.random()*0.3));
+  const w=Math.min(Math.max(A.w,1),maxBid(k));
+  if(A.bid+1<=w)act(k,Math.min(A.bid+1+(Math.random()<.4?1:0),w));else act(k,0)},900)}
+function setDl(A){A.bids=A.bids||0;A.lim=Math.max(3,7-Math.floor(A.bids/2));A.dl=Date.now()+A.lim*1000;A.fired=0}
+function tickT(){const A=S&&S.A;if(!A||S.over)return;const left=Math.max(0,(A.dl-Date.now())/1000),el=$("tm");
+ if(el)el.innerHTML=isCPU(A.turn)?"":`⏱ ${Math.ceil(left)}s${A.lim<7?" · disputa acirrada, tempo menor":""}<span class="tbar"><i style="width:${left/A.lim*100}%"></i></span>`;
+ if(left<=0&&!A.fired&&!isCPU(A.turn)&&!(S.online&&S.me===1)){A.fired=1;act(A.turn,0)}}
+function auctionUI(){
+ const A=S.A,k=A.turn,sold=S.teams[0].length+S.teams[1].length;
+ if(A.dl===undefined)setDl(A);
+ if(!S.tt){const me=S;S.tt=setInterval(()=>{if(S!==me||S.over){clearInterval(me.tt);return}tickT()},200)}
+ setTimeout(()=>{if(S&&S.A===A)tickT()},0);
+ $("sub").textContent="Leilão · "+S.form+" · "+sold+" de 22 vendidos";
+ const top=(S.last?`<div class="status">${S.last}</div>`:"")+`<div class="pl" style="cursor:default">${av(A.p)}<span class="i"><span class="n">${A.p[0]}</span><span class="c">${A.p[1]} · ${NAMES[A.p[2]]}</span></span><span class="o">${A.p[3]}</span></div><div class="status">Lance atual: ${A.bid?A.bid+" ("+tn(A.leader)+")":"nenhum"}</div><div class="status" id="tm"></div>`;
+ let panel;
+ if(isCPU(k)||(S.online&&k!==S.me))panel=`<p class="sub">Aguardando ${tn(k)}…</p>`;
+ else{const m=maxBid(k);panel=`<h2>Vez de ${tn(k)} · ${S.coins[k]} moedas</h2><div class="bar">`+[1,3,5,10].map(d=>`<button class="main" data-bid="${A.bid+d}"${A.bid+d>m?" disabled":""}>+${d} (${A.bid+d})</button>`).join("")+`<button class="alt" data-bid="0">Passar</button></div>`}
+ return[top,panel]}
+function next(){if(S.t<total()){S.view=S.online?S.me:who();S.pf=null}render();if(S.t<total()&&isCPU(who()))setTimeout(cpuPick,700)}
+function pick(p){S.teams[who()].push(p);S.t++;next()}
+function cpuPick(){if(!S||S.t>=total()||!isCPU(who()))return;const k=who(),u=taken();let best=null,bs=-1;
+ PLAYERS.forEach(p=>{if(u.includes(p[0])||need(k,p[2])<=0)return;const s=p[3]+Math.random()*4;if(s>bs){bs=s;best=p}});pick(best)}
+function pitch(k){
+ const f=FORMS[S.form],rows=[Array(f.ATA).fill("ATA"),Array(f.MEI).fill("MEI"),["LAT",...Array(f.ZAG).fill("ZAG"),"LAT"],["GK"]];
+ const cnt={},now=S.type==="leilao"?(S.over?null:S.A.p[2]):(S.t<total()&&k===who()?(S.pf||firstNeed(k)):null);let marked=false;
+ return `<div class="pitch">`+rows.map(r=>`<div class="row">`+r.map(pos=>{
+  const i=cnt[pos]=(cnt[pos]||0)+1,p=S.teams[k].filter(x=>x[2]===pos)[i-1];
+  if(p)return `<div class="slot done"><span class="n">${p[0]}</span><span class="o">${p[3]}</span></div>`;
+  const isNow=pos===now&&!marked;if(isNow)marked=true;
+  return `<div class="slot${isNow?" now":""}"><b>${NAMES[pos]}</b></div>`}).join("")+`</div>`).join("")+`</div>`}
+function str(k){const t=S.teams[k],a=ps=>{const x=t.filter(p=>ps.includes(p[2]));return x.length?x.reduce((s,p)=>s+p[3],0)/x.length:60};
+ return{atk:a(["ATA"])*.6+a(["MEI"])*.4,def:a(["GK","ZAG","LAT"])*.6+a(["MEI"])*.4}}
+function simulate(){
+ const st=[str(0),str(1)],g=[0,0],ev=[];
+ for(let k=0;k<2;k++){const p=Math.min(.5,Math.max(.04,.18+(st[k].atk-st[1-k].def)*.012));
+  for(let i=0;i<8;i++)if(Math.random()<p){g[k]++;
+   const pool=S.teams[k].map(x=>[x,x[2]==="ATA"?3:x[2]==="MEI"?1.5:x[2]==="GK"?0:.2]);let r=Math.random()*pool.reduce((s,y)=>s+y[1],0),sc=pool[0][0];
+   for(const y of pool){r-=y[1];if(r<=0){sc=y[0];break}}
+   ev.push({m:1+Math.floor(Math.random()*90),k,n:sc[0]})}}
+ ev.sort((a,b)=>a.m-b.m);
+ let win=g[0]>g[1]?0:g[1]>g[0]?1:-1,pen=false;
+ if(win<0){pen=true;win=Math.random()<.5+(avg(0)-avg(1))*.02?0:1}
+ return{g,ev,win,pen}}
+const POS={GK:0,ZAG:1,LAT:2,MEI:3,ATA:4};
+function startMatch(){if(S.live)return;clearInterval(S.timer);const me=S;me.match=simulate();me.min=0;me.live=true;render();
+ me.timer=setInterval(()=>{if(S!==me){clearInterval(me.timer);return}me.min++;if(me.online&&ROOM)ROOM.emit("tick",{min:me.min}).catch(()=>{});if(me.min>=90){clearInterval(me.timer);me.live=false;render()}else drawMatch()},140)}
+function drawMatch(){const el=$("mv");if(!el)return;const m=S.match,min=S.min,end=!S.live;
+ const goals=[0,1].map(k=>m.ev.filter(e=>e.k===k&&e.m<=min));
+ const lu=k=>S.teams[k].slice().sort((x,y)=>POS[x[2]]-POS[y[2]]).map(p=>{const c=goals[k].filter(e=>e.n===p[0]).length;
+  return `<div class="lu">${av(p)}<span class="i"><span class="n">${p[0]}</span><span class="c">${p[2]}${c?" · "+"⚽".repeat(c):""}</span></span><span class="o">${p[3]}</span></div>`}).join("");
+ const feed=m.ev.filter(e=>e.m<=min);
+ el.innerHTML=`<div class="clock">${min}'</div><div class="status" style="text-align:center">${tn(0)} ${goals[0].length} x ${goals[1].length} ${tn(1)}</div><p class="sub" style="text-align:center">${end?"Fim de jogo":min<=45?"1º tempo":"2º tempo"}</p>`+
+ `<div class="cols"><div><h2>${tn(0)}</h2>${lu(0)}</div><div><h2>${tn(1)}</h2>${lu(1)}</div></div><h2>Gols</h2>`+
+ (feed.length?feed.map(e=>`<p class="sub" style="margin:2px 0">${e.m}' ${e.n} (${tn(e.k)})</p>`).join(""):`<p class="sub">Nenhum gol até agora.</p>`)+
+ (end?`<div class="status">${m.pen?"Empate, decidido nos pênaltis: ":"Campeão: "}${tn(m.win)}</div>`:"")}
+let ROOM=null,unsub=null;
+const lobby=async()=>{try{return window.claude&&claude.use?await claude.use("room"):null}catch(e){return null}};
+const setMsg=t=>{setup();const e=$("ns");if(e)e.textContent=t};
+const guest=()=>S&&S.online&&S.me===1;
+const enc=()=>({type:S.type,form:S.form,t:S.t,teams:S.teams.map(a=>a.map(p=>p[5])),coins:S.coins,gone:S.gone,round:S.round,over:S.over,last:S.last||"",
+ A:S.A?{p:S.A.p[5],bid:S.A.bid,leader:S.A.leader,passed:S.A.passed,elig:S.A.elig,turn:S.A.turn,bids:S.A.bids||0}:null,match:S.match||null,min:S.min||0,live:!!S.live});
+const dec=d=>({...d,mode:"online",n:2,teams:d.teams.map(a=>a.map(i=>PLAYERS[i])),A:d.A?{...d.A,p:PLAYERS[d.A.p]}:null,online:true,me:1,view:S&&S.view!=null?S.view:1,pf:null});
+function sync(){try{ROOM.emit("state",enc()).catch(()=>{})}catch(e){}}
+function doPick(p){guest()?ROOM.emit("act",{a:"pick",i:p[5]}):pick(p)}
+function doBid(v){guest()?ROOM.emit("act",{a:"bid",v}):act(S.A.turn,v)}
+function doPlay(){guest()?ROOM.emit("act",{a:"play"}):startMatch()}
+function hostAct(m){if(m.isMe||!S||!S.online||S.me!==0)return;const d=m.data||{};
+ if(d.a==="play"){if(isDone()&&!S.live)startMatch();return}
+ if(isDone())return;
+ if(S.type==="leilao"){if(d.a==="bid"&&S.A.turn===1&&Number.isInteger(d.v)&&(d.v===0||(d.v>S.A.bid&&d.v<=maxBid(1))))act(1,d.v)}
+ else if(d.a==="pick"&&who()===1){const p=PLAYERS[d.i];if(p&&!taken().includes(p[0])&&need(1,p[2])>0)pick(p)}}
+function leaveRoom(){try{if(ROOM)ROOM.leave()}catch(e){}ROOM=null;lobby().then(L=>L&&L.presence({room:null,form:null,type:null}))}
+async function mkRoom(pub){
+ const L=await lobby();if(!L)return setMsg("Online indisponível: abra o link logado na sua conta Claude.");
+ const code=Math.random().toString(36).slice(2,6);
+ try{ROOM=await L.join("draft-"+code)}catch(e){return setMsg("Não foi possível criar a sala.")}
+ ROOM.on("act",hostAct);
+ ROOM.on("hello",m=>{if(m.isMe||S)return;if(pub)L.presence({room:null});startGame()});
+ if(pub)L.presence({room:code,form:cfg.form,type:cfg.type});
+ $("app").innerHTML=`<h2>Sala ${code.toUpperCase()}</h2><p class="sub">${pub?"Sala pública aberta. ":"Envie este código ao adversário. "}Aguardando entrar…</p><div class="bar"><button class="alt" id="cx">Cancelar</button></div>`;
+ $("cx").onclick=()=>{leaveRoom();setup()}}
+async function joinRoom(code){
+ const L=await lobby();if(!L)return setMsg("Online indisponível: abra o link logado na sua conta Claude.");
+ code=String(code).toLowerCase().replace(/[^a-z0-9]/g,"");if(code.length<4)return setMsg("Digite o código de 4 letras.");
+ try{ROOM=await L.join("draft-"+code)}catch(e){return setMsg("Não foi possível entrar na sala.")}
+ ROOM.on("state",m=>{if(m.isMe||!m.data)return;S=dec(m.data);render()});
+ ROOM.on("tick",m=>{if(m.isMe||!S||!m.data)return;S.min=m.data.min;S.live=m.data.min<90;S.live?drawMatch():render()});
+ ROOM.emit("hello",{});
+ $("app").innerHTML=`<p class="sub">Entrando na sala ${code.toUpperCase()}…</p>`;
+ setTimeout(()=>{if(!S){leaveRoom();setMsg("Ninguém respondeu nesse código.")}},6000)}
+async function onlineSetup(){
+ $("mk").onclick=()=>mkRoom(false);$("mp").onclick=()=>mkRoom(true);$("jn").onclick=()=>joinRoom($("cd").value);
+ const L=await lobby();if(!L){const e=$("pub");if(e)e.innerHTML=`<p class="sub">Online indisponível neste acesso.</p>`;return}
+ if(unsub)unsub();
+ unsub=L.onPeers(ch=>{const el=$("pub");if(!el)return;
+  const rs=ch.peers.filter(p=>!p.isMe&&p.presence&&/^[a-z0-9]{4}$/.test(String(p.presence.room||"")));
+  el.innerHTML=rs.length?rs.map(p=>{const q=p.presence;return `<button class="pl" data-room="${q.room}"><span class="i"><span class="n">Sala ${q.room.toUpperCase()}</span><span class="c">${FORMS[q.form]?q.form:""} · ${q.type==="leilao"?"Leilão":"Escolha"}</span></span><span class="o">Entrar</span></button>`}).join(""):`<p class="sub">Nenhuma sala pública aberta agora.</p>`;
+  el.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>joinRoom(b.dataset.room))})}
+function firstNeed(k){return Object.keys(FORMS[S.form]).find(p=>need(k,p)>0)}
+function setup(){
+ if(cfg.type==="leilao"&&cfg.mode==="solo")cfg.mode="cpu";
+ $("sub").textContent="Monte o melhor time do Brasileirão em um draft.";
+ const tabs=(o,key)=>`<div class="tabs">`+Object.keys(o).map(v=>`<button class="tab${cfg[key]===v?" on":""}" data-k="${key}" data-v="${v}">${typeof o[v]==="string"?o[v]:v}</button>`).join("")+`</div>`;
+ $("app").innerHTML=`<h2>Tipo de draft</h2>`+tabs({escolha:"Escolha",leilao:"Leilão (80 moedas)"},"type")+`<h2>Modo</h2>`+tabs(cfg.type==="leilao"?{cpu:MODES.cpu,amigo:MODES.amigo,online:MODES.online}:MODES,"mode")+`<h2>Formação</h2>`+tabs(FORMS,"form")+
+ (cfg.mode==="online"?`<h2>Sala online</h2><div class="bar"><button class="main" id="mk">Criar sala privada</button><button class="alt" id="mp">Criar sala pública</button></div><div class="bar"><input id="cd" maxlength="4" placeholder="Código" style="width:110px;padding:11px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit"><button class="alt" id="jn">Entrar</button></div><p class="sub" id="ns"></p><h2>Salas públicas</h2><div id="pub"><p class="sub">Procurando…</p></div>`:`<div class="bar"><button class="main" id="go">Começar draft</button></div>`);
+ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{cfg[b.dataset.k]=b.dataset.v;setup()});
+ if($("go"))$("go").onclick=startGame;if(cfg.mode==="online")onlineSetup()}
+function render(){draw();if(S&&S.online&&S.me===0&&ROOM)sync()}
+function draw(){
+ if(!S)return setup();
+ const done=isDone(),k=S.type==="leilao"?0:who();
+ const views=S.n==2?`<div class="tabs">`+[0,1].map(i=>`<button class="tab${S.view===i?" on":""}" data-view="${i}">${tn(i)}${done?" "+avg(i):S.type==="leilao"?" ("+S.coins[i]+")":""}</button>`).join("")+`</div>`:"";
+ let top,panel;
+ if(!done&&S.type==="leilao"){[top,panel]=auctionUI()}else if(!done){
+  $("sub").textContent=`Escolha ${S.t+1} de ${total()} · ${S.form}`;
+  top=`<div class="status">${isCPU(k)?"CPU está escolhendo…":S.online&&k!==S.me?"Vez do adversário…":"Vez de "+tn(k)}</div>`;
+  if(isCPU(k)||(S.online&&k!==S.me))panel="";
+  else{
+   const needed=Object.keys(FORMS[S.form]).filter(p=>need(k,p)>0);
+   if(!needed.includes(S.pf))S.pf=needed[0];
+   const u=taken(),list=PLAYERS.filter(p=>p[2]===S.pf&&!u.includes(p[0])).sort((a,b)=>b[3]-a[3]);
+   panel=`<h2>Escolha seu ${NAMES[S.pf].toLowerCase()}</h2><div class="tabs">`+needed.map(p=>`<button class="tab${S.pf===p?" on":""}" data-pf="${p}">${NAMES[p]} ${need(k,p)}</button>`).join("")+`</div>`+
+   list.map((p,i)=>`<button class="pl" data-i="${i}">${av(p)}<span class="i"><span class="n">${p[0]}</span><span class="c">${p[1]}</span></span><span class="o">${p[3]}</span></button>`).join("");
+   S.list=list}
+ }else{
+  $("sub").textContent="Draft encerrado.";
+  const lab=a=>a>=90?"Time dos sonhos":a>=87?"Candidato ao título":a>=84?"Vaga na Libertadores":"Luta contra o rebaixamento";
+  let msg;
+  if(S.n==1)msg=lab(avg(0));
+  else{const a=avg(0),b=avg(1);msg=a==b?"Notas médias iguais.":"Maior nota média: "+tn(a>b?0:1)+"."}
+  top=`<div class="sc">`+Array.from({length:S.n},(_,i)=>`<div class="res"><div class="big">${avg(i)}</div><p>${tn(i)}${S.type==="leilao"?" · sobram "+S.coins[i]+" moedas":""}</p></div>`).join("")+`</div><div class="status">${msg}</div>`;
+  panel=`<div class="bar">${S.n==2?`<button class="main" id="play"${S.live?" disabled":""}>${S.match?"Jogar de novo":"Jogar partida"}</button>`:""}<button class="alt" id="again">Novo draft</button><button class="alt" id="share">Copiar escalação</button></div>`}
+ $("app").innerHTML=done&&S.match?top+'<div id="mv"></div>'+panel:top+views+pitch(S.view)+panel;
+ if(done&&S.match)drawMatch();
+ document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{S.view=+b.dataset.view;render()});
+ document.querySelectorAll("[data-pf]").forEach(b=>b.onclick=()=>{S.pf=b.dataset.pf;render()});
+ document.querySelectorAll("[data-bid]").forEach(b=>b.onclick=()=>doBid(+b.dataset.bid));
+ document.querySelectorAll("button.pl").forEach(b=>b.onclick=()=>doPick(S.list[+b.dataset.i]));
+ if(done){$("again").onclick=()=>{leaveRoom();S=null;render()};if($("play"))$("play").onclick=doPlay;
+  $("share").onclick=()=>{const t="Draft Brasileirão "+S.form+"\n"+S.teams.slice(0,S.n).map((tm,i)=>tn(i)+" ("+avg(i)+"): "+tm.map(p=>p[0]).join(", ")).join("\n");
+   try{navigator.clipboard.writeText(t);$("share").textContent="Copiado"}catch(e){$("share").textContent="Não foi possível copiar"}}}
+}
+render();
+</script>
+</body>
+</html>
